@@ -30,4 +30,9 @@ public class Apply {
     @OneToMany(mappedBy = "apply")
     private List<Answer> answers = new ArrayList<>();
 
+    public Apply(Member member, Recruitment recruitment) {
+        this.member = member;
+        this.recruitment = recruitment;
+    }
+
 }

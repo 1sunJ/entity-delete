@@ -14,12 +14,12 @@ import study.delete_propagation.entity.member.Member;
 import study.delete_propagation.entity.recruitment.Recruitment;
 import study.delete_propagation.entity.recruitment.question.Question;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
- * v1 : 연관관계마다 직접 map 세팅
+ * v1 : 연관관계 class 를 map 으로 지정 후 getEntity 메서드를 리플렉션으로 동적 호출
  */
 @Slf4j
 //@Component
@@ -39,8 +39,30 @@ public class EntityRelationManagerV1 implements EntityRelationManager {
     }
 
     @Override
+    public List<Object> getChildEntities(Object entity) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        List<Object> childEntities = new ArrayList<>();
+
+        List<Class<?>> childClasses = getChildClasses(entity);
+        for (Class<?> childClass : childClasses) {
+            Method method = entity.getClass().getMethod("get" + childClass.getSimpleName() + "s");
+            List<?> result = (List<?>) method.invoke(entity);
+
+            for (Object o : result) {
+                log.info("child : {}", o);
+            }
+
+            childEntities.addAll(result);
+        }
+
+        return childEntities;
+    }
+
     public List<Class<?>> getChildClasses(Object entity) {
-        return CHILD_ENTITY_MAP.get(entity.getClass());
+        if (CHILD_ENTITY_MAP.containsKey(entity.getClass())) {
+            return CHILD_ENTITY_MAP.get(entity.getClass());
+        } else {
+            return List.of();
+        }
     }
 
 }

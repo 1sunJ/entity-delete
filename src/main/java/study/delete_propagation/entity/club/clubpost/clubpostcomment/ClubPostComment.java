@@ -23,4 +23,9 @@ public class ClubPostComment {
     @JoinColumn(name = "club_post_id")
     private ClubPost clubPost;
 
+    public ClubPostComment(Member member, ClubPost clubPost) {
+        this.member = member;
+        this.clubPost = clubPost;
+    }
+
 }

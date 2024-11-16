@@ -24,9 +24,13 @@ public class Recruitment {
     private Club club;
 
     @OneToMany(mappedBy = "recruitment")
-    private List<Apply> applies = new ArrayList<>();
+    private List<Apply> applys = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitment")
     private List<Question> questions = new ArrayList<>();
+
+    public Recruitment(Club club) {
+        this.club = club;
+    }
 
 }

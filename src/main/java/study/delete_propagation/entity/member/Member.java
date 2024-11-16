@@ -26,6 +26,6 @@ public class Member {
     private List<ClubPostComment> clubPostComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<Apply> applies = new ArrayList<>();
+    private List<Apply> applys = new ArrayList<>();
 
 }
