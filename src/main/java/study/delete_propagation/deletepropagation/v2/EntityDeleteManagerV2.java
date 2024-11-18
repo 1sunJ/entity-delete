@@ -1,4 +1,4 @@
-package study.delete_propagation.deletepropagation.v1;
+package study.delete_propagation.deletepropagation.v2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,19 +10,20 @@ import study.delete_propagation.deletepropagation.EntityDeleteManager;
 import study.delete_propagation.deletepropagation.EntityRelationManager;
 import study.delete_propagation.entity.club.clubpost.ClubPost;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 /**
- * v1 : 재귀로 자식 탐색하며 물리 삭제
+ * v2 : 논리 삭제 처리 도입
  */
 @Slf4j
 //@Component
 @Transactional
 @RequiredArgsConstructor
-public class EntityDeleteManagerV1 implements EntityDeleteManager {
+public class EntityDeleteManagerV2 implements EntityDeleteManager {
 
     private final Map<String, JpaRepository<?, ?>> repositoryMap;
     private final EntityRelationManager entityRelationManager;
@@ -35,13 +36,16 @@ public class EntityDeleteManagerV1 implements EntityDeleteManager {
             deleteEntity(childEntity);
         }
 
-        // 엔티티 삭제
-        Class<?> clazz = entity.getClass();
-        String key = resolveMapKey(clazz);
-        JpaRepository<?, ?> jpaRepository = repositoryMap.get(key);
-
-        Method deleteMethod = jpaRepository.getClass().getMethod("delete", Object.class);
-        deleteMethod.invoke(jpaRepository, entity);
+        // 엔티티 삭제 -> 논리 삭제 여부 판단
+        Class<?> entityClass = entity.getClass();
+        try { // 논리 삭제
+            Method deleteMethod = entityClass.getMethod("deleteEntity");
+            deleteMethod.invoke(entity);
+        } catch (NoSuchMethodException e) { // 물리 삭제
+            String key = resolveMapKey(entityClass);
+            JpaRepository<?, ?> jpaRepository = repositoryMap.get(key);
+            jpaRepository.getClass().getMethod("delete", Object.class).invoke(jpaRepository, entity);
+        }
     }
 
     private String resolveMapKey(Class<?> clazz) {
@@ -59,7 +63,7 @@ public class EntityDeleteManagerV1 implements EntityDeleteManager {
         log.info(" ====== end ====== ");
 
         String key = resolveMapKey(ClubPost.class);
-        log.info("resolved key : {}", key);
+        log.info("resolved key test : {}", key);
     }
 
 }

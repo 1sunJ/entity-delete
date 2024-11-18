@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import study.delete_propagation.deletepropagation.v1.EntityDeleteManagerV1;
-import study.delete_propagation.deletepropagation.v1.EntityRelationManagerV1;
+import study.delete_propagation.deletepropagation.v2.EntityDeleteManagerV2;
 
 import java.util.Map;
 
@@ -24,7 +24,7 @@ public class EntityDeleteConfig {
 
     @Bean
     public EntityDeleteManager entityDeleteManager() {
-        return new EntityDeleteManagerV1(
+        return new EntityDeleteManagerV2(
                 repositoryMap,
                 entityRelations());
     }

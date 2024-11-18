@@ -6,14 +6,16 @@ import lombok.NoArgsConstructor;
 import study.delete_propagation.entity.club.Club;
 import study.delete_propagation.entity.club.clubpost.clubpostcomment.ClubPostComment;
 import study.delete_propagation.entity.member.Member;
+import study.delete_propagation.logicaldelete.LogicalDeleteEntity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
-public class ClubPost {
+public class ClubPost implements LogicalDeleteEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "club_post_id")
@@ -30,9 +32,16 @@ public class ClubPost {
     @OneToMany(mappedBy = "clubPost")
     private List<ClubPostComment> clubPostComments = new ArrayList<>();
 
+    private LocalDateTime deletedDateTime;
+
     public ClubPost(Member member, Club club) {
         this.member = member;
         this.club = club;
+    }
+
+    @Override
+    public void deleteEntity() {
+        this.deletedDateTime = LocalDateTime.now();
     }
 
 }

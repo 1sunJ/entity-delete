@@ -26,11 +26,11 @@ public class TestController {
 
     @GetMapping("/1")
     public String test1() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-//        Member member = memberRepository.findById(1L).get();
-//        entityDeleteManager.deleteEntity(member);
+        Member member = memberRepository.findById(1L).get();
+        entityDeleteManager.deleteEntity(member);
 
-        Club club = clubRepository.findById(1L).get();
-        entityDeleteManager.deleteEntity(club);
+//        Club club = clubRepository.findById(1L).get();
+//        entityDeleteManager.deleteEntity(club);
         return "ok";
     }
 

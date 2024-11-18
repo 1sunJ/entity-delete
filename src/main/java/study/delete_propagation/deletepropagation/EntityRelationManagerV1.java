@@ -1,4 +1,4 @@
-package study.delete_propagation.deletepropagation.v1;
+package study.delete_propagation.deletepropagation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
